@@ -4,12 +4,6 @@ LABEL maintainer="e-sensing team <esensing-team@dpi.inpe.br>"
 VOLUME /data
 VOLUME /var/lib/postgresql/data
 
-
-# ##############################################################################
-# Exporting SCIDB and EOWS WebServer Port to be able to access through host machine
-EXPOSE 1239
-EXPOSE 7654
-
 ARG CLUSTER=esensing
 ARG MAKE_J=4
 
