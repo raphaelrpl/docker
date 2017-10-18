@@ -39,4 +39,4 @@ wait_for_postgres.sh\n' | tee -a /docker-entrypoint.sh \
 bash" | tee -a /docker-entrypoint.sh \
 && chmod +x /docker-entrypoint.sh
 
-RUN /docker-entrypoint.sh
+ENTRYPOINT /docker-entrypoint.sh
