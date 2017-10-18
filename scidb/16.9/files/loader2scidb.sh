@@ -1,8 +1,10 @@
 #!/bin/bash
 
 #
+# Script based in https://github.com/albhasan/gdal2scidb/blob/dev/tests/load_parallel.sh
+#
 # DESCRIPTION:
-# Loads Binary SciDB chunks into SciDB instance. **NOTE** that it removes array if there is.
+# Loads Binary SciDB chunks into SciDB instance.
 #
 # VARIABLES:
 # SDB_INSTANCES_MACHINE - Number of SciDB instances in each machine
@@ -23,6 +25,7 @@
 # Chunks: 4
 # Description: Array of Sinop (MT - BR)
 #
+# # Or ./loader2scidb.sh /chunk/*
 # ./loader2scidb.sh /chunk/1 /chunk/2 /chunk/3 /chunk/4
 #
 
@@ -33,11 +36,6 @@ fi
 # Number of SciDB instances in the whole cluster
 if [ -z "$SDB_INSTANCES" ]; then
   SDB_INSTANCES=4
-fi
-
-if [ "$#" -lt $SDB_INSTANCES ] || [ "$#" -gt $SDB_INSTANCES ] ; then
-  echo "ERROR: You must provide $SDB_INSTANCES binary files"
-  exit 1
 fi
 
 if [ -z "$SDB_1D_SCHEMA" ]; then
@@ -56,6 +54,12 @@ if [ -z "$SDB_3D_ARRAY" ]; then
   SDB_3D_ARRAY=mod13q1
 fi
 
+function load2scidb()
+{
+  echo -ne "Inserting $1 ... "
+  iquery -naq "insert(redimension(input($SDB_1D_SCHEMA, '$1', -1, $SDB_FORMAT, 1000, shadowArray), $SDB_3D_ARRAY, false), $SDB_3D_ARRAY)"
+}
+
 # TODO: Add directive for cleanup
 # echo "Cleaning up before ... "
 # iquery -naq "remove(shadowArray)" 2> /dev/null
@@ -64,8 +68,13 @@ fi
 echo "Creating array $SDB_3D_ARRAY ... "
 iquery -naq "CREATE ARRAY $SDB_3D_ARRAY $SDB_3D_SCHEMA"
 
-echo "Running SciDB query..."
-for f in "$@"; do
-  echo -ne "Inserting $f ... "
-  iquery -naq "insert(redimension(input($SDB_1D_SCHEMA, '$f', -1, $SDB_FORMAT, 1000, shadowArray), $SDB_3D_ARRAY, false), $SDB_3D_ARRAY)"
-done
+# Check if provided argument is a pattern to find files or absolute path
+if [[ $1 == *"*"* ]]; then
+  find . -type f -name $1 -print0 | while IFS= read -r -d $'\0' file; do
+    load2scidb file
+  done
+else
+  for f in "$@"; do
+    load2scidb $f
+  done
+fi
