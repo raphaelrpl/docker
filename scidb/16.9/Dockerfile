@@ -172,5 +172,6 @@ RUN rm ${DEV_DIR}/scidb-16.9.0.db1a98f.tgz $DEV_DIR/cookies.txt \
 
 COPY files/create_scidb_cluster.sh /usr/local/bin
 COPY files/loader2scidb.sh /usr/local/bin
+COPY files/loader2scidb_distributed.sh /usr/local/bin
 
 RUN  chmod +x /usr/local/bin/create_scidb_cluster.sh
