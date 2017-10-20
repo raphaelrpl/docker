@@ -2,11 +2,11 @@ FROM esensing-scidb
 
 LABEL maintainer="e-sensing team <esensing-team@dpi.inpe.br>"
 
-VOLUME /data
-
 # ##############################################################################
 # Exporting EOWS WebServer Port to be able to access through host machine
 EXPOSE 7654
+
+VOLUME "/opt/eows/0.5.0"
 
 ARG MAKE_J=4
 
@@ -30,7 +30,7 @@ RUN mkdir -p $EOWS_DEPENDENCIES_DIR $EOWS_CODEBASE $EOWS_BUILD_DIR \
     
     && cd cmake-3.7.2 \
     && ./configure \
-    && make && make install \
+    && make -j${MAKE_J} && make install -j${MAKE_J} \
     && cd ${EOWS_DEPENDENCIES_DIR} \
     && rm -rf cmake-3.7.*
 
