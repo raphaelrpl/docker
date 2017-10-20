@@ -1,9 +1,6 @@
 FROM ubuntu:14.04
 LABEL maintainer="e-sensing team <esensing-team@dpi.inpe.br>"
 
-VOLUME /data
-VOLUME /var/lib/postgresql/data
-
 ARG CLUSTER=esensing
 ARG MAKE_J=4
 
