@@ -66,24 +66,26 @@ if [ "$#" -eq $SDB_INSTANCES ]; then
   #-------------------------------------------------------------------------------
   echo "Copying files..."
   count=0
+
+  file_name=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 13)
   for f in "$@"; do
     min=$(( $count % $SDB_INSTANCES_MACHINE ))
     mip=`echo $(( $count / $SDB_INSTANCES_MACHINE )) | cut -f1 -d "."`
-    cp "$f" $SDB_INSTANCES_PATH/$mip/$min/p &
+    cp "$f" $SDB_INSTANCES_PATH/$mip/$min/$file_name &
     # the last one does NOT run in the background
     if [ $count -eq $SDB_INSTANCES ]; then
-        cp "$f" $SDB_INSTANCES_PATH/$mip/$min/p
+        cp "$f" $SDB_INSTANCES_PATH/$mip/$min/$file_name
     fi
     count=`expr $count + 1`
   done
   echo "Running SciDB query..."
-  iquery -naq "insert(redimension(input($SDB_1D_SCHEMA, 'p', -1, $SDB_FORMAT, 0, shadowArray), $SDB_3D_ARRAY), $SDB_3D_ARRAY)"
+  iquery -naq "insert(redimension(input($SDB_1D_SCHEMA, '$file_name', -1, $SDB_FORMAT, 0, shadowArray), $SDB_3D_ARRAY), $SDB_3D_ARRAY)"
   echo "Deleting files..."
   countdel=0
   for f in "$@"; do
     min=$(( $countdel % $SDB_INSTANCES_MACHINE ))
     mip=`echo $(( $countdel / $SDB_INSTANCES_MACHINE )) | cut -f1 -d "."`
-    rm $SDB_INSTANCES_PATH/$mip/$min/p
+    rm $SDB_INSTANCES_PATH/$mip/$min/$file_name
     countdel=`expr $countdel + 1`
   done
 else
