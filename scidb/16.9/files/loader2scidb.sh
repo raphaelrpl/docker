@@ -57,7 +57,7 @@ fi
 function load2scidb()
 {
   echo -ne "Inserting $1 ... "
-  iquery -naq "insert(redimension(input($SDB_1D_SCHEMA, '$1', -1, $SDB_FORMAT, 1000, shadowArray), $SDB_3D_ARRAY, false), $SDB_3D_ARRAY)"
+  iquery -naq "insert(redimension(input($SDB_1D_SCHEMA, '$1', -2, $SDB_FORMAT, 1000, shadowArray), $SDB_3D_ARRAY, false), $SDB_3D_ARRAY)"
 }
 
 # TODO: Add directive for cleanup

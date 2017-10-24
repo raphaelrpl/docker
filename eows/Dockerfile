@@ -2,11 +2,11 @@ FROM esensing-scidb
 
 LABEL maintainer="e-sensing team <esensing-team@dpi.inpe.br>"
 
-VOLUME /opt/eows/0.5.0
-
 # ##############################################################################
 # Exporting EOWS WebServer Port to be able to access through host machine
 EXPOSE 7654
+
+VOLUME /opt/eows/0.5.0
 
 ARG MAKE_J=4
 
