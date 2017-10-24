@@ -2,7 +2,7 @@ FROM esensing-scidb
 
 LABEL maintainer="e-sensing team <esensing-team@dpi.inpe.br>"
 
-VOLUME /data
+VOLUME /opt/eows/0.5.0
 
 # ##############################################################################
 # Exporting EOWS WebServer Port to be able to access through host machine
@@ -17,6 +17,7 @@ ENV EOWS_DEPENDENCIES_DIR=$EOWS_PATH/3rdparty
 ENV EOWS_CODEBASE=$EOWS_PATH/codebase
 ENV EOWS_BUILD_DIR=$EOWS_PATH/build-release
 ENV EOWS_INSTALL_DIR=/opt/eows/0.5.0
+ENV EOWS_CMAKE_DIR=/opt/cmake
 
 # ##############################################################################
 # Installing CMAKE 3.X
@@ -24,23 +25,18 @@ RUN mkdir -p $EOWS_DEPENDENCIES_DIR $EOWS_CODEBASE $EOWS_BUILD_DIR \
     && cd ${EOWS_DEPENDENCIES_DIR} \
     && apt-get update \
     && apt-get remove cmake* -y \
-    && apt-get install curl -y \
-    && curl -O https://cmake.org/files/v3.7/cmake-3.7.2.tar.gz \
+    && wget -O cmake-3.7.2.tar.gz https://cmake.org/files/v3.7/cmake-3.7.2-Linux-x86_64.tar.gz \
     && tar -zxf cmake-3.7.2.tar.gz \
-    
-    && cd cmake-3.7.2 \
-    && ./configure \
-    && make && make install \
-    && cd ${EOWS_DEPENDENCIES_DIR} \
-    && rm -rf cmake-3.7.*
+    && mv cmake-3.7.2-Linux-x86_64 ${EOWS_CMAKE_DIR} \
+    && rm -rf cmake* \
+    && echo "export PATH=${EOWS_CMAKE_DIR}/bin:$PATH" | tee -a /root/.bashrc /home/scidb/.bashrc
 
 # ##############################################################################
 # Configure EOWS
 RUN git clone https://github.com/e-sensing/eows.git $EOWS_CODEBASE \
     && cd $EOWS_DEPENDENCIES_DIR \
     && cp $EOWS_CODEBASE/bash/install-3rdparty-linux-ubuntu-14.04.sh . \
-    && curl -O http://www.dpi.inpe.br/foss/eows/eows-3rdparty-0.5.0-linux-ubuntu-14.04.tar.gz \
-
+    && wget -O eows-3rdparty-0.5.0-linux-ubuntu-14.04.tar.gz http://www.dpi.inpe.br/foss/eows/eows-3rdparty-0.5.0-linux-ubuntu-14.04.tar.gz \
     # Compile Dependendies
     && ./install-3rdparty-linux-ubuntu-14.04.sh $EOWS_DEPENDENCIES_DIR \
     && cd ${EOWS_DEPENDENCIES_DIR} \
