@@ -18,6 +18,7 @@ ENV EOWS_CODEBASE=$EOWS_PATH/codebase
 ENV EOWS_BUILD_DIR=$EOWS_PATH/build-release
 ENV EOWS_INSTALL_DIR=/opt/eows/0.5.0
 ENV EOWS_CMAKE_DIR=/opt/cmake
+ENV PATH="${EOWS_CMAKE_DIR}/bin:${PATH}"
 
 # ##############################################################################
 # Installing CMAKE 3.X
