@@ -1,4 +1,4 @@
-FROM esensing-scidb
+FROM esensing-scidb:16.9
 
 LABEL maintainer="e-sensing team <esensing-team@dpi.inpe.br>"
 
@@ -37,6 +37,6 @@ wait_for_postgres.sh\n' | tee -a /docker-entrypoint.sh \
     fi" | tee -a /docker-entrypoint.sh \
     && echo "trap \"scidb.py stopall $CLUSTER; service postgresql stop\" EXIT HUP INT QUIT TERM \n\
 bash" | tee -a /docker-entrypoint.sh \
-&& chmod +x /docker-entrypoint.sh
+    && chmod +x /docker-entrypoint.sh
 
 ENTRYPOINT /docker-entrypoint.sh

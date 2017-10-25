@@ -41,13 +41,13 @@ RUN groupadd $SCIDB_USR \
 # ##############################################################################
 # Instaling dependencies
 RUN apt-get update \
-    && apt-get install -y  wget \
-						   apt-transport-https \
-						   software-properties-common \
-						   expect \
-						   openssh-server \
-						   openssh-client \
-						   vim
+    && apt-get install -y wget \
+                          apt-transport-https \
+                          software-properties-common \
+                          expect \
+                          openssh-server \
+                          openssh-client \
+                          vim
 
 WORKDIR $DEV_DIR
 
@@ -103,15 +103,13 @@ RUN service ssh start \
 # ##############################################################################
 # Building SciDB
 RUN service ssh start \
-	  && ./run.py setup --force \
-    && ./run.py make -j${MAKE_J}
-
-# ##############################################################################   
-# Instaling SciDB
-	RUN service ssh start \
+    && ./run.py setup --force \
+    && ./run.py make -j${MAKE_J} \
+    # Instaling SciDB
     && yes n | ./run.py install --light \
     # Moving SciDB extern to SCIDB_INSTALL_PATH to fix Murmurhash dependency
-    && mv ${SCIDB_SOURCE_PATH}/extern ${SCIDB_INSTALL_PATH}
+    && mv ${SCIDB_SOURCE_PATH}/extern ${SCIDB_INSTALL_PATH} \
+    && rm -rf ${SCIDB_BUILD_PATH}
     
 # ##############################################################################   
 # Configuring SciDB
@@ -119,7 +117,7 @@ RUN service postgresql start \
     && wait_for_postgres.sh\
     && sudo -u postgres psql -c "ALTER USER "postgres" WITH PASSWORD 'postgres';" \
     && POSTGRES_HOME=$(echo ~postgres) \    
- 	  && mkdir -p ${DATA_DIR}/scidb \
+    && mkdir -p ${DATA_DIR}/scidb \
     && chown -R ${SCIDB_USR}:${SCIDB_USR} ${DATA_DIR} \
     && chown -R scidb:scidb $SCIDB_INSTALL_PATH
 
