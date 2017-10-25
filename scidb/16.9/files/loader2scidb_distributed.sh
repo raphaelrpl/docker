@@ -17,8 +17,11 @@ if [ -z "$SDB_INSTANCES" ]; then
   export SDB_INSTANCES=4                     # SciDB instances in the whole cluster
 fi
 
+DATA_PATH=$(dirname "$1")
+DATA_NAME_PATTERN=$(basename "$1")
+
 # create a list of files to process and feed them to GNU PARALLEL to avoid 
-find $1 -type f -name $2 | sort | head -n $FIRST > fileslist.txt
+find $DATA_PATH -type f -name $DATA_NAME_PATTERN | sort | head -n $FIRST > fileslist.txt
 
 echo "Creating array $SDB_3D_ARRAY ... "
 iquery -naq "CREATE ARRAY $SDB_3D_ARRAY $SDB_3D_SCHEMA"
