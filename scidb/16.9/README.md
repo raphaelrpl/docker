@@ -7,7 +7,7 @@ This folder contains files for building E-Sensing SciDB 16.09 image. The image c
 - `R`
 - `sits`
 
-**Note** that it builds a common SciDB image and does not contain `entrypoint` statement. You must implement own container initialization. Take a look into `desktop` for an example.
+**Note** that it builds a common SciDB image and does not contain `entrypoint` statement. You must implement own container initialization. Take a look into `desktop` folder for an example.
 
 ## Build the Docker image
 

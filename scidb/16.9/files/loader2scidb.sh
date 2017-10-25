@@ -78,14 +78,18 @@ if [ "$#" -eq $SDB_INSTANCES ]; then
     fi
     count=`expr $count + 1`
   done
+
+  # find $SDB_INSTANCES_PATH/$mip -name $file_name
+  sleep 1
+
   echo "Running SciDB query..."
-  iquery -naq "insert(redimension(input($SDB_1D_SCHEMA, '$file_name', -1, $SDB_FORMAT, 0, shadowArray), $SDB_3D_ARRAY), $SDB_3D_ARRAY)"
+  iquery -naq "insert(redimension(input($SDB_1D_SCHEMA, '$file_name', -1, $SDB_FORMAT, 1000, shadowArray), $SDB_3D_ARRAY), $SDB_3D_ARRAY)"
   echo "Deleting files..."
   countdel=0
   for f in "$@"; do
     min=$(( $countdel % $SDB_INSTANCES_MACHINE ))
     mip=`echo $(( $countdel / $SDB_INSTANCES_MACHINE )) | cut -f1 -d "."`
-    rm $SDB_INSTANCES_PATH/$mip/$min/$file_name
+    rm --verbose $SDB_INSTANCES_PATH/$mip/$min/$file_name
     countdel=`expr $countdel + 1`
   done
 else

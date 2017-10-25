@@ -23,4 +23,5 @@ find $1 -type f -name $2 | sort | head -n $FIRST > fileslist.txt
 echo "Creating array $SDB_3D_ARRAY ... "
 iquery -naq "CREATE ARRAY $SDB_3D_ARRAY $SDB_3D_SCHEMA"
 
-parallel --eta --jobs 1 -n $SDB_INSTANCES --arg-file fileslist.txt load2scidb.sh 
+parallel --eta --jobs 1 -n $SDB_INSTANCES --arg-file fileslist.txt loader2scidb.sh 
+rm fileslist.txt
