@@ -51,6 +51,9 @@ RUN cd $EOWS_BUILD_DIR \
                                  -DEOWS_GDAL2_ENABLED=ON \
                                  -DEOWS_OGC_OWS_ENABLED=ON \
                                  -DEOWS_SERVICE_WCS_ENABLED=ON \
+                                 -DEOWS_SERVICE_WMS_ENABLED=ON \
+                                 -DEOWS_SERVICE_WTSCS_ENABLED=ON \
+                                 -DEOWS_SERVICE_WTSS_ENABLED=ON \
                                  # Changing CMake RPath settings.
                                  -DCMAKE_INSTALL_RPATH=$EOWS_INSTALL_DIR/lib \
                                  -DCMAKE_SKIP_BUILD_RPATH=OFF \
