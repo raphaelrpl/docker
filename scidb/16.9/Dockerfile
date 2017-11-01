@@ -145,7 +145,9 @@ RUN echo "deb https://cran.uni-muenster.de/bin/linux/ubuntu/ trusty/" | tee -a /
                           libudunits2-dev \
                           libgdal20 gdal-bin libgdal-dev \
                           libgl1-mesa-dev freeglut3 freeglut3-dev \
-                          r-base r-base-dev
+                          r-base r-base-dev \
+                          # Required for SciDB Data Loader in Parallel
+                          parallel
 
 RUN R -e "install.packages('devtools', repos='https://ftp.gwdg.de/pub/misc/cran');\
 library(devtools);\
@@ -170,5 +172,6 @@ RUN rm ${DEV_DIR}/scidb-16.9.0.db1a98f.tgz $DEV_DIR/cookies.txt \
 
 COPY files/create_scidb_cluster.sh /usr/local/bin
 COPY files/loader2scidb.sh /usr/local/bin
+COPY files/loader2scidb_distributed.sh /usr/local/bin
 
 RUN  chmod +x /usr/local/bin/create_scidb_cluster.sh
